@@ -36,7 +36,7 @@ namespace TankTraX
             base.Initialize(Content);
         }
 
-        public override void Update()
+        public override void Update(GameTime gameTime)
         {
             KeyboardState state = Keyboard.GetState();
 
@@ -45,24 +45,16 @@ namespace TankTraX
 
             angleZ %= 360f;
 
-            if (state.IsKeyDown(forwardKey))
+            if (state.IsKeyDown(forwardKey)) acceleration = speed;
+            else if (state.IsKeyDown(backwardsKey)) acceleration = speed * -1;
+            else acceleration = 0;
+
+            if (state.IsKeyDown(Keys.Space))
             {
-                location.X += (float)(0.25f * Math.Cos(angleZ));
-                location.Y += (float)(0.25f * Math.Sin(angleZ));
+                fireBall();
             }
 
-            if (state.IsKeyDown(backwardsKey))
-            {
-                location.X -= (float)(0.25f * Math.Cos(angleZ));
-                location.Y -= (float)(0.25f * Math.Sin(angleZ));
-            }
-
-            base.Update();
-        }
-
-        public override void Draw(Matrix view, Matrix projection, GraphicsDevice graphics)
-        {
-            base.Draw(view, projection, graphics);
+            base.Update(gameTime);
         }
     }
 }

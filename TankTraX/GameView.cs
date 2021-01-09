@@ -18,12 +18,17 @@ namespace TankTraX
         private float nearClippingDistance;
         private float farClippingDistance;
 
+        private float cameraHeight;
+        private float worldViewExtent;
+
         private Matrix worldMatrix;
         private Matrix viewMatrix;
         private Matrix projectionMatrix;
 
         private LocalPlayerTank tank1;
         private LocalPlayerTank tank2;
+
+        List<Tank> tanks;
 
         private SpriteFont debugFont;
         
@@ -34,9 +39,12 @@ namespace TankTraX
             graphics.PreferredBackBufferHeight = graphics.GraphicsDevice.DisplayMode.Height;
             graphics.ApplyChanges();
 
-            cameraPosition = new Vector3(0f, 0f, 60.0f);
+            cameraHeight = 60.0f;
+            cameraPosition = new Vector3(0f, 0f, cameraHeight);
             cameraTarget = new Vector3(0f, 0f, 0f);
-            fovAngle = MathHelper.ToRadians(45);
+            float fovAngleDegrees = 45f;
+            fovAngle = MathHelper.ToRadians(fovAngleDegrees);
+            worldViewExtent = cameraHeight * (float)Math.Tan(fovAngleDegrees / 2f);
             aspectRatio = graphics.PreferredBackBufferWidth / graphics.PreferredBackBufferHeight;
             nearClippingDistance = 0.01f;
             farClippingDistance = 100f; // Max render distance.
@@ -44,32 +52,51 @@ namespace TankTraX
             viewMatrix = Matrix.CreateLookAt(cameraPosition, cameraTarget, Vector3.Up);
             projectionMatrix = Matrix.CreatePerspectiveFieldOfView(fovAngle, aspectRatio, nearClippingDistance, farClippingDistance);
 
-            tank1 = new LocalPlayerTank();
-            tank2 = new LocalPlayerTank(Keys.Up, Keys.Left, Keys.Right, Keys.Down);
+            tanks = new List<Tank>();
+            tanks.Add(new LocalPlayerTank());
+            tanks.Add(new LocalPlayerTank(Keys.Up, Keys.Left, Keys.Right, Keys.Down));
         }
 
         public void Initialize(ContentManager Content)
         {
             debugFont = Content.Load<SpriteFont>("Fonts/Debug/DebugListing");
             
-            tank1.Initialize(Content);
-            tank2.Initialize(Content);
+            foreach(Tank tank in tanks)
+            {
+                tank.Initialize(Content);
+            }
         }
 
-        public void Update()
+        public void Update(GameTime gameTime)
         {
-            tank1.Update();
-            tank2.Update();
+            foreach(Tank tank in tanks)
+            {
+                tank.Update(gameTime);
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime, GraphicsDevice graphics)
         {
-            tank1.Draw(viewMatrix, projectionMatrix, graphics);
-            tank2.Draw(viewMatrix, projectionMatrix, graphics);
+            graphics.DepthStencilState = new DepthStencilState() { DepthBufferEnable = true };
+
+            foreach (Tank tank in tanks)
+            {
+                tank.Draw3D(viewMatrix, projectionMatrix, graphics);
+            }
 
             spriteBatch.Begin();
 
             spriteBatch.DrawString(debugFont, (1 / (float)gameTime.ElapsedGameTime.TotalSeconds).ToString(), new Vector2(0, 0), Color.Yellow);
+            
+            for(int i = 0; i < tanks.Count; i++)
+            {
+                spriteBatch.DrawString(debugFont, "Tank " + tanks[i].GetName() + ": " + tanks[i].GetLocation().ToString(), new Vector2(0, 16 * (i + 1)), Color.Yellow);
+            }
+
+            foreach(Tank tank in tanks)
+            {
+                tank.Draw2D(spriteBatch, fovAngle, cameraPosition, graphics.DisplayMode.Width, graphics.DisplayMode.Height);
+            }
 
             spriteBatch.End();
 

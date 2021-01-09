@@ -38,7 +38,7 @@ namespace TankTraX
                 Exit();
 
             // TODO: Add your update logic here
-            gv.Update();
+            gv.Update(gameTime);
 
             base.Update(gameTime);
         }
