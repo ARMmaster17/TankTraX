@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30804.86
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TankTraX", "TankTraX\TankTraX.csproj", "{2373C599-8DE1-4A88-A98E-858355A5FBAB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2373C599-8DE1-4A88-A98E-858355A5FBAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2373C599-8DE1-4A88-A98E-858355A5FBAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2373C599-8DE1-4A88-A98E-858355A5FBAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2373C599-8DE1-4A88-A98E-858355A5FBAB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4B302FA3-A7AC-46EE-8DA1-F55B358F4D19}
+	EndGlobalSection
+EndGlobal
