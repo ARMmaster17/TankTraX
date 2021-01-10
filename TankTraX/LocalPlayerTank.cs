@@ -19,7 +19,7 @@ namespace TankTraX
         {
             forwardKey = Keys.W;
             leftKey = Keys.A;
-            rightKey = Keys.D;
+            rightKey = Keys.D; 
             backwardsKey = Keys.S;
         }
 

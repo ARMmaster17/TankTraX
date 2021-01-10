@@ -7,6 +7,9 @@ using System.Text;
 
 namespace TankTraX
 {
+    /// <summary>
+    /// Represents an object that can be represented in 3D space with XY acceleration, velocity, and translation.
+    /// </summary>
     public class Object3D
     {
         protected Vector3 location;
@@ -17,6 +20,9 @@ namespace TankTraX
 
         private Model _model;
 
+        /// <summary>
+        /// Initializes an Object3D with all zero-ed out parameters.
+        /// </summary>
         public Object3D()
         {
             location = new Vector3(0f, 0f, 0f);
@@ -26,6 +32,10 @@ namespace TankTraX
             angleZ = 0f;
         }
 
+        /// <summary>
+        /// Initializes an Object3D.
+        /// </summary>
+        /// <param name="modelLocation">Starting location of 3D model.</param>
         public Object3D(Vector3 modelLocation)
         {
             location = modelLocation;
@@ -35,6 +45,11 @@ namespace TankTraX
             angleZ = 0f;
         }
 
+        /// <summary>
+        /// Initializes an Object3D.
+        /// </summary>
+        /// <param name="modelLocation">Starting location of 3D model.</param>
+        /// <param name="startingAngleZ">Starting angle of 3D model (look/acceleration).</param>
         public Object3D(Vector3 modelLocation, float startingAngleZ)
         {
             location = modelLocation;
@@ -44,16 +59,29 @@ namespace TankTraX
             angleZ = startingAngleZ;
         }
 
+        /// <summary>
+        /// Loads the specified 3D model from the content store.
+        /// </summary>
+        /// <param name="Content">MonoGame content manager.</param>
+        /// <param name="modelName">Path to 3D model file in content package.</param>
         public virtual void Initialize(ContentManager Content, string modelName)
         {
             _model = Content.Load<Model>(modelName);
         }
 
+        /// <summary>
+        /// Initializes the Object3D to use a pre-loaded 3D model.
+        /// </summary>
+        /// <param name="model">Pre-loaded 3D model.</param>
         public virtual void Initialize(Model model)
         {
             _model = model;
         }
 
+        /// <summary>
+        /// Updates the current object translation through current velocity and acceleration parameters.
+        /// </summary>
+        /// <param name="gameTime">Current GameTime measurement for time/step normalization.</param>
         public virtual void Update(GameTime gameTime)
         {
             if (velocity + acceleration < maxSpeed && velocity + acceleration > (maxSpeed * -1))
@@ -72,6 +100,12 @@ namespace TankTraX
             MoveAngledDirection(velocity, gameTime);
         }
 
+        /// <summary>
+        /// Handles the drawing of 3D assets controlled by the Object3D.
+        /// </summary>
+        /// <param name="view">Globally-controlled view translation matrix.</param>
+        /// <param name="projection">Globally-controlled projection translation matrix.</param>
+        /// <param name="graphics">Active GraphicsDevice object to be drawn to.</param>
         public virtual void Draw3D(Matrix view, Matrix projection, GraphicsDevice graphics)
         {
             Matrix translationMatrix = Matrix.CreateRotationZ(angleZ) * Matrix.CreateTranslation(location);
@@ -90,11 +124,28 @@ namespace TankTraX
             }
         }
 
+        /// <summary>
+        /// Handles drawing of any 2D assets (fonts/sprites) controlled by the Object3D. Assumes spriteBatch.begin() has already been called and the depth buffer has been set.
+        /// </summary>
+        /// <param name="spriteBatch">Instance of helper class for drawing 2D assets.</param>
+        /// <param name="cameraFOV">Current FOV angle of camera in degrees.</param>
+        /// <param name="cameraPosition">Current position of camera in 3D world.</param>
+        /// <param name="viewportWidth">Width of 3D viewport in pixels.</param>
+        /// <param name="viewportHeight">Height of 3D viewport in pixels.</param>
         public virtual void Draw2D(SpriteBatch spriteBatch, float cameraFOV, Vector3 cameraPosition, int viewportWidth, int viewportHeight)
         {
 
         }
 
+        /// <summary>
+        /// Gets the obects XY location on the monitor (if the object is in view).
+        /// </summary>
+        /// <param name="cameraFOV">Camera field-of-view in degrees.</param>
+        /// <param name="cameraPosition">Camera position in world.</param>
+        /// <param name="viewportWidth">Width of 3D viewport.</param>
+        /// <param name="viewportHeight">Height of 3D viewport.</param>
+        /// <param name="yOffset">Offset to add to returned Y value.</param>
+        /// <returns>2D location on screen of 3D object (or (-1,-1) if not in the field of view).</returns>
         protected Vector2 Get2DScreenDrawingLocation(float cameraFOV, Vector3 cameraPosition, int viewportWidth, int viewportHeight, int yOffset)
         {
             float worldViewExtent = cameraPosition.Z * (float)Math.Tan(cameraFOV / 2);
@@ -112,6 +163,11 @@ namespace TankTraX
             return new Vector2(x, viewportHeight - y - yOffset);
         }
 
+        /// <summary>
+        /// Moves the Object3D in the currently-facing direction by the specified amount.
+        /// </summary>
+        /// <param name="velocity">Amount to move along the angleZ vector.</param>
+        /// <param name="gameTime">Current GameTime object for time/step normalizing.</param>
         protected void MoveAngledDirection(float velocity, GameTime gameTime)
         {
             float timeAdjustedVelocity = velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
